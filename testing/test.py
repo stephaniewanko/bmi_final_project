@@ -1,3 +1,6 @@
+
+from scripts import NN
+
 #testing the mathematical functions
 
-from ./scripts/NN.py import cost_function, sigmoid_der
+#testing the DNA pre-processing files
