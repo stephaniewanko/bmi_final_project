@@ -3,6 +3,13 @@ import matplotlib.pyplot as plt
 from scipy import optimize
 import matplotlib.pyplot as plt
 
+'''
+ Implement a feed-forward, three-layer, neural network with standard sigmoidal units.
+ Yourprogram should allow for variation in the size of input layer, hidden layer, and output layer.
+ Youwill need to write your code to support cross-validation.
+ We expect that you will be able toproduce fast enough code to be of use in the learning task at hand.
+ You will want to make surethat your code can learn the 8x3x8 encoder problem prior to attempting the Rap1learningtask.
+'''
 
 # Class representing the neural network
 class neuralNetwork(object):
