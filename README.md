@@ -7,7 +7,7 @@ Assignment: Distinguish real binding sites of a transcription factor (RAP1) from
 # example
 
 [![Build
-Status](https://travis-ci.org/ucsf-bmi-203-2017/example.svg?branch=master)](https://travis-ci.org/stephaniewanko/bmi_final_project)
+Status](https://travis-ci.org/stephaniewanko/bmi_final_project.svg?branch=master)](https://travis-ci.org/stephaniewanko/bmi_final_project)
 
 Example python project with testing.
 
