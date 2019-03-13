@@ -62,6 +62,8 @@ class neuralNetwork(object):
     This will be used for our backpropagation.
     It based on the average of the output activation values.
     We also have our lambda value in here to regulaize 
+    sum the squared difference between the predicted and known output
+    ??lambda section
      '''
         self.h = self.forwardPropagate(input) #going to move forward through the neural network and get out some output value
         J = 0.5 * np.sum((known_output - self.h) ** 2) / input.shape[0] + (self.Lambda/2)*(np.sum(self.W1**2)+np.sum(self.W2**2)) #calculate the difference beween output of forward NN & known output
