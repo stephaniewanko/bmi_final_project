@@ -45,6 +45,8 @@ class neuralNetwork(object):
     '''
     Function to perform sigmoid activation function; doing this on an array.
     This is a special case of the logistic function & will squash the output to be between 0 and 1.
+    INPUT: array of weighted values
+    OUTPUT: value between 0 and 1
     '''
         return 1 / (1 + np.exp(-z)) 
 
