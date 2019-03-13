@@ -16,7 +16,7 @@ first, we are going to develop a class to represent the neural network
 class neuralNetwork(object):
     def __init__(self,input_layer_size, hidden_layer_size, output_layer_size, Lambda): 
    '''
-   Our NN has 3 layers(input, hidden, output). 
+   NN has 3 layers(input, hidden, output). 
    INPUT (hyperparameters): 
    Input layer size- number of nodes for the input
    Hidden layer size- number of nodes in the hidden layer
@@ -28,32 +28,51 @@ class neuralNetwork(object):
         self.outputLayerSize = output_layer_size #setting the output layer size
         # Initialize the sinapses with random weights
         self.W1 = np.random.randn(self.inputLayerSize, self.hiddenLayerSize) #setting the initial weights as random
-        self.W2 = np.random.randn(self.hiddenLayerSize, self.outputLayerSize) #setting the initial weights as random
+        self.W2 = np.random.randn(self.hiddenLayerSize, self.outputLayerSize) #setting the initial weights as random (This is also what is helping to set up our NN to be 8x3x8).
         self.Lambda = Lambda #setting the lambda value as your input lambda
 
-    def forwardPropagate(self, X):
-        self.z2 = np.dot(X, self.W1)
-        self.a2 = self.sigmoid(self.z2)
-        self.z3 = np.dot(self.a2, self.W2)
-        h = self.sigmoid(self.z3)
-        return h
+    def forwardPropagate(self, input): 
+     '''
+     This function is going to move you forward through the NN. 
+     '''
+        self.z2 = np.dot(input, self.W1) #It is going to take the dot product of the input and the first set of weights.
+        self.a2 = self.sigmoid(self.z2) #Perform the activation function on the middle (hidden) layer.
+        self.z3 = np.dot(self.a2, self.W2) #Dot produce of the activated values in the middle (hidden) layer to produce the input for the third layer
+        output = self.sigmoid(self.z3) #Perform the activation function on the third layer and produce the predicted output
+        return output #return the third layer 
 
     def sigmoid(self, z):
-        return 1 / (1 + np.exp(-z))
+    '''
+    Function to perform sigmoid activation function; doing this on an array.
+    This is a special case of the logistic function & will squash the output to be between 0 and 1.
+    '''
+        return 1 / (1 + np.exp(-z)) 
 
-    def sigmoidPrime(self, z):
-        return np.exp(-z)/((1 + np.exp(-z)) ** 2)
+    def sigmoid_der(self, z):
+    '''
+    Function to perform the derivative of the sigmoid activation function; doing this on an array
+    '''
+        return np.exp(-z)/((1 + np.exp(-z)) ** 2) 
 
-    def cost(self, X, y):
-        self.h = self.forwardPropagate(X)
-        J = 0.5 * np.sum((y - self.h) ** 2) / X.shape[0] + (self.Lambda/2)*(np.sum(self.W1**2)+np.sum(self.W2**2))
+    def cost(self, input, known_output): 
+     '''
+    Measurement of goodness of fit of NN output data to the known output. 
+    This will be used for our backpropagation.
+    It based on the average of the output activation values.
+    We also have our lambda value in here to regulaize 
+     '''
+        self.h = self.forwardPropagate(input) #going to move forward through the neural network and get out some output value
+        J = 0.5 * np.sum((known_output - self.h) ** 2) / input.shape[0] + (self.Lambda/2)*(np.sum(self.W1**2)+np.sum(self.W2**2)) #calculate the difference beween output of forward NN & known output
         return J
 
-    def costPrime(self, X, y):
+    def cost_der(self, X, y):
+     '''
+     
+     '''
         self.h = self.forwardPropagate(X)
-        delta3 = np.multiply(-(y - self.h), self.sigmoidPrime(self.z3))
+        delta3 = np.multiply(-(y - self.h), self.sigmoid_der(self.z3))
         dJdW2 = np.dot(self.a2.T, delta3)/X.shape[0] + self.Lambda * self.W2
-        delta2 = np.dot(delta3, self.W2.T) * self.sigmoidPrime(self.z2)
+        delta2 = np.dot(delta3, self.W2.T) * self.sigmoid_der(self.z2)
         dJdW1 = np.dot(X.T, delta2)/X.shape[0] + self.Lambda * self.W1
 
         return dJdW1, dJdW2
@@ -68,7 +87,7 @@ class neuralNetwork(object):
         self.W2 = np.reshape(weights[W1_end:W2_end], (self.hiddenLayerSize, self.outputLayerSize))
 
     def unrollGradients(self, X, y):
-        dJdW1, dJdW2 = self.costPrime(X, y)
+        dJdW1, dJdW2 = self.cost_der(X, y)
         return np.concatenate((dJdW1.ravel(), dJdW2.ravel()))
 
 # Class for train a neural network
