@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 sys.path.append('../scripts/')
-from NN import Neural_Network
+from scripts import NN
 
 #testing the autoencoder
 x = np.identity(8)
