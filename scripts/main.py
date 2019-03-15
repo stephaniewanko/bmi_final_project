@@ -45,8 +45,8 @@ print('Now rounding Matrix')
 #1) remove some of the false negatives from the fasta file & create new fasta file.
 
 ###########________________________________________#################
-pos_seq=pd.read_csv('rap1-lieb-positives.txt', sep='\t', header=None)
-neg_seq=list(SeqIO.parse("/yeast-upstream-1k-negative.fa", 'fasta'))
+pos_seq=pd.read_csv('data/rap1-lieb-positives.txt', sep='\t', header=None)
+neg_seq=list(SeqIO.parse("data/yeast-upstream-1k-negative.fa", 'fasta'))
 print(len(neg_seq))
 remove_seq=[]
 for y in range(len(neg_seq)):
@@ -152,7 +152,7 @@ def DNA_input(inputs):
 #Train NN on positives and negatives (note: avoid overfitting)
 #print(outputs.shape)
 #print(input_DNA.shape)
-input_train, output_train, input_test_seq, output_test=select_sequences('/Users/stephaniewankowicz/Dropbox/BMI_203/Final_Project/New_Neg_seq.fa','rap1-lieb-positives.txt', 90)
+input_train, output_train, input_test_seq, output_test=select_sequences('data/New_Neg_seq.fa','data/rap1-lieb-positives.txt', 90)
 #print(output_train.shape)
 #print(output_train.shape[0])
 #print(output_train)
@@ -175,7 +175,7 @@ def learn_parms():
         print(i)
         for learning_rate in [0.01,0.1,0.25,0.5,0.7,1,5]:
             #=k_folds
-            input_train, output_train, input_test_seq, output_test=select_sequences('/Users/stephaniewankowicz/Dropbox/BMI_203/Final_Project/New_Neg_seq.fa','rap1-lieb-positives.txt', 90)
+            input_train, output_train, input_test_seq, output_test=select_sequences('data/New_Neg_seq.fa','data/rap1-lieb-positives.txt', 90)
             input_DNA_train=DNA_input(input_train)
             NN_learn = Neural_Network(input_layer_size=68, hidden_layer_size=i,output_layer_size=180, Lambda=2e-6)  # initialize NN #input_layer_size=input_DNA.shape[0], output_layer_size=outputs.shape[0], hidden_layer_size=10, Lambda=0.00000005
             error=NN_learn.train(input_DNA_train, output_train, iterations=500,learning_rate=learning_rate)
@@ -201,7 +201,7 @@ def cross_validation(pos_seq_file, neg_seq_file,num_train_runs, num_samples_trai
         print(i)
         for lr in [0.01,0.5,0.05]:
             #=k_folds
-            input_train, output_train, input_test_seq, output_test=select_sequences('/Users/stephaniewankowicz/Dropbox/BMI_203/Final_Project/New_Neg_seq.fa','rap1-lieb-positives.txt', 90)
+            input_train, output_train, input_test_seq, output_test=select_sequences('data/New_Neg_seq.fa','data/rap1-lieb-positives.txt', 90)
         input_DNA_train=DNA_input(input_train)
         #avg_accuracy, avg_auc, tprs, fprs = k_folds(train_seq, train_exp, learn_rate, num_hidden)
         #output
