@@ -1,4 +1,5 @@
 import sys
+import numpy as np
 sys.path.append('../scripts/')
 from scripts import NN
 
