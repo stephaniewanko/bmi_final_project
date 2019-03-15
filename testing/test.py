@@ -6,11 +6,9 @@ from scripts import NN
 assert NN.sigmoid_der(2)==0.5
 
 #testing the autoencoder
-
-def test_autoencoder():
-    x = np.identity(8)
-    y = np.identity(8)
-    NN = Neural_Network(input_layer_size=8, hidden_layer_size=3, output_layer_size=8, Lambda=2e-6)
-    NN.train(x,y,10000,0.45)  
-    predict = NN.forward(x)
-    assert len(predict.shape[0]) == 8
+x = np.identity(8)
+y = np.identity(8)
+NN = Neural_Network(input_layer_size=8, hidden_layer_size=3, output_layer_size=8, Lambda=2e-6)
+NN.train(x,y,10000,0.45)
+predict=NN.forward(x)
+assert len(predict.shape[0]) == 8
