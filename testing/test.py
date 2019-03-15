@@ -1,4 +1,5 @@
-
+import sys
+sys.path.append('../scripts/')
 from scripts import NN
 
 #testing the mathematical functions
