@@ -46,7 +46,7 @@ print('Now rounding Matrix')
 
 ###########________________________________________#################
 pos_seq=pd.read_csv('rap1-lieb-positives.txt', sep='\t', header=None)
-neg_seq=list(SeqIO.parse("/Users/stephaniewankowicz/Dropbox/BMI_203/Final_Project/yeast-upstream-1k-negative.fa", 'fasta'))
+neg_seq=list(SeqIO.parse("/yeast-upstream-1k-negative.fa", 'fasta'))
 print(len(neg_seq))
 remove_seq=[]
 for y in range(len(neg_seq)):
