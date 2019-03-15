@@ -1,6 +1,6 @@
 import sys
 sys.path.append('../scripts/')
-from scripts import NN
+from NN import Neural_Network
 
 #testing the mathematical functions
 
