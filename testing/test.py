@@ -10,3 +10,5 @@ NN_auto = NN.Neural_Network(input_layer_size=8, hidden_layer_size=3, output_laye
 NN_auto.train(x,y,10000,0.45)
 predict=NN_auto.forward(x)
 assert np.array_equal(x, predict.round())
+
+assert 1==1
