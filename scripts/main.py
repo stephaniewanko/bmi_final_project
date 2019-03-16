@@ -44,8 +44,8 @@ print(predict.round())
 #1) remove some of the false negatives from the fasta file & create new fasta file.
 
 ###########________________________________________#################
-pos_seq=pd.read_csv('rap1-lieb-positives.txt', sep='\t', header=None)
-neg_seq=list(SeqIO.parse("/Users/stephaniewankowicz/Dropbox/BMI_203/Final_Project/yeast-upstream-1k-negative.fa", 'fasta'))
+pos_seq=pd.read_csv('data/rap1-lieb-positives.txt', sep='\t', header=None)
+neg_seq=list(SeqIO.parse("data/yeast-upstream-1k-negative.fa", 'fasta'))
 print(len(neg_seq))
 remove_seq=[]
 for y in range(len(neg_seq)):
@@ -151,7 +151,7 @@ def DNA_input(inputs):
 #Train NN on positives and negatives (note: avoid overfitting)
 #print(outputs.shape)
 #print(input_DNA.shape)
-input_train, output_train, input_test_seq, output_test=select_sequences('/Users/stephaniewankowicz/Dropbox/BMI_203/Final_Project/New_Neg_seq.fa','rap1-lieb-positives.txt', 90)
+input_train, output_train, input_test_seq, output_test=select_sequences('data/New_Neg_seq.fa','data/rap1-lieb-positives.txt', 90)
 print(input_test_seq)
 #print(output_train.shape[0])
 #print(output_train)
@@ -184,7 +184,7 @@ def learn_parms():
     error_list=[]
     count=1
     for a in range(100): #we are choosing 100 different random cuts of our data to cross-validate
-        input_train, output_train, input_test, output_test=select_sequences('/Users/stephaniewankowicz/Dropbox/BMI_203/Final_Project/New_Neg_seq.fa','rap1-lieb-positives.txt', 90)
+        input_train, output_train, input_test, output_test=select_sequences('data/New_Neg_seq.fa','data/rap1-lieb-positives.txt', 90)
         input_DNA_train=DNA_input(input_train)
         input_DNA_test=DNA_input(input_test)
         for i in [3,5,10,20,30,40,50,100]: #number of hidden nodes to test
@@ -217,7 +217,7 @@ def learn_parms():
 #we are going to train the NN using the hyperparamters we choose in the cross validation part
 
 NN_test = Neural_Network(input_layer_size=68, hidden_layer_size=20,output_layer_size=2, Lambda=2e-6)  # initialize NN #input_layer_size=input_DNA.shape[0], output_layer_size=outputs.shape[0], hidden_layer_size=10, Lambda=0.00000005
-input_train, output_train, input_test, output_test=select_sequences('/Users/stephaniewankowicz/Dropbox/BMI_203/Final_Project/New_Neg_seq.fa','rap1-lieb-positives.txt', 1)
+input_train, output_train, input_test, output_test=select_sequences('data/New_Neg_seq.fa','data/rap1-lieb-positives.txt', 1)
 # Use previously found validated parameters for training
 input_DNA_train=DNA_input(input_train)
 input_DNA_test=DNA_input(input_test)
