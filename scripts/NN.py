@@ -1,5 +1,4 @@
-##on GIT
-
+#3/15/2019
 import numpy as np
 from scipy import optimize
 
@@ -28,7 +27,7 @@ class Neural_Network(object):
         # Initialize with random weights
         self.W1 = np.random.randn(self.inputLayerSize, self.hiddenLayerSize) #setting the initial weights as random
         self.W2 = np.random.randn(self.hiddenLayerSize, self.outputLayerSize) #setting the initial weights as random (This is also what is helping to set up our NN to be 8x3x8).
-        self.B1 = np.random.uniform(size=(1, self.hiddenLayerSize)) # bias for hidden layer
+        self.B1 = np.random.uniform(size=(1, self.hiddenLayerSize)) # bias for hidden layer, to prevent overfitting
         self.B2 = np.random.uniform(size=(1, self.outputLayerSize)) # bias for output layer
         self.Lambda = Lambda #setting the lambda value (regularization factor to make sure we are not overfitting. )
     def forward(self, input):
@@ -48,27 +47,33 @@ class Neural_Network(object):
 
     def back_prop(self, input,output,learning_rate):
         """
-		Optimize prediction by minimizing error with gradient descent
+		Once we have a forward NN, we are going to see how bad our predictions are. 
+		Optimize prediction by minimizing error with gradient descent. 
 		INPUT: expected output and output activation
-		"""
+		OUTPUT: error of our original NN. We are also resetting weights and biases to the move more forward.
+	"""
         error=(output-self.pred_out)#calculating the error between the output and the predicted output layer
         #calculate the derivative of the activation function to get the gradient slope
-        grad_out=self.sigmoid_der(self.pred_out) #+self.Lambda*self.W2
-        grad_hid=self.sigmoid_der(self.hid_act) #+self.Lambda*self.W1
-        delta_out=grad_out*error
+        grad_out=self.sigmoid_der(self.pred_out)
+        grad_hid=self.sigmoid_der(self.hid_act) 
+        delta_out=grad_out*error 
         #print(delta_out.shape)
         delta_hid=np.dot(delta_out,self.W2.T) * grad_hid
-        #update weights
+        #update weights by moving in the direction of the gradient. The size of the step is defined by the learning rate (hyperparameter).
         self.W2 += (np.dot(self.hid_act.T,delta_out)*learning_rate) #+ self.Lambda * self.W1
         self.W1 += (np.dot(input.T, delta_hid)*learning_rate) #+ self.Lambda * self.W1 #lambda serving as a regularization factor
-        self.B2 += np.sum(delta_out,axis=0)*learning_rate
+        self.B2 += np.sum(delta_out,axis=0)*learning_rate 
         self.B1 += np.sum(delta_hid,axis=0)*learning_rate
-        #create new weights=gradient * learning rate
         return error
 
     def train(self, input, known_output, iterations, learning_rate):
-        #print('starting!')
+        '''
+	To train, we are going to iteratively move forward and backwards through our NN, updating weights and biases.
+	OUTPUT: We are going to keep track of the errors as we iterate through. We should see these errors drop and then plataeu. 
+	'''
+	#print('starting!')
         #i=0
+	
         error_list=[]
         for i in range(iterations):
             self.forward(input)
@@ -89,5 +94,6 @@ class Neural_Network(object):
     def sigmoid_der(self, z):
         '''
         Function to perform the derivative of the sigmoid activation function; doing this on an array
+	This is to perform the gradient movement through the NN. 
         '''
         return np.exp(-z)/((1 + np.exp(-z)) ** 2)
