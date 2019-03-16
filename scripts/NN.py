@@ -97,3 +97,5 @@ class Neural_Network(object):
 	This is to perform the gradient movement through the NN. 
         '''
         return np.exp(-z)/((1 + np.exp(-z)) ** 2)
+
+
