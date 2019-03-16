@@ -90,11 +90,13 @@ def select_sequences(neg_seq_file, pos_seq_file, num_train):
     neg_outputs = np.zeros(len(neg_input)) #zeros
 
     #combine and randomize input and outputs
+    #we don't want the input to the NN to be all the positives then all the negatives. It may learn somethign we are not intending it to learn. 
     inputs=np.append(pos_input, neg_input) #np.random.shuffle()
     outputs=np.append(pos_outputs, neg_outputs)
     combined = list(zip(inputs, outputs))
     np.random.shuffle(combined)
     inputs[:], outputs[:] = zip(*combined)
+    
     #for cross-validation, we are also going to select the testing postive and negative sequences
     pos_test=np.setdiff1d(pos_seq,pos_input)
     neg_test=np.setdiff1d(neg_seq,neg_input)
@@ -112,6 +114,10 @@ def select_sequences(neg_seq_file, pos_seq_file, num_train):
 #C=1000
 #G=0100
 #T=0010
+
+'''
+We need to convert to numbers so the NN can do math. The 4 letters will get different numbers that are not dependent on each other so one letter is not weighted more than others. 
+'''
 
 def DNA_input(inputs):
     s = (len(inputs), 4*len(inputs[0])) #create matrix w/num of sequences by 4*17(DNA input length)
