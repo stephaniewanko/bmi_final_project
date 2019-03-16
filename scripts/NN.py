@@ -28,19 +28,23 @@ class Neural_Network(object):
         # Initialize with random weights
         self.W1 = np.random.randn(self.inputLayerSize, self.hiddenLayerSize) #setting the initial weights as random
         self.W2 = np.random.randn(self.hiddenLayerSize, self.outputLayerSize) #setting the initial weights as random (This is also what is helping to set up our NN to be 8x3x8).
-        self.Lambda = Lambda #setting the lambda value as your input lambda
+        self.B1 = np.random.uniform(size=(1, self.hiddenLayerSize)) # bias for hidden layer
+        self.B2 = np.random.uniform(size=(1, self.outputLayerSize)) # bias for output layer
+        self.Lambda = Lambda #setting the lambda value (regularization factor to make sure we are not overfitting. )
     def forward(self, input):
      '''
      This function is going to move you forward through the NN.
      '''
      self.hidden = np.dot(input, self.W1) #take the dot product of the input and the first set of weights.
      #print(self.hidden.shape)
-     self.hid_act = self.sigmoid(self.hidden) #Perform the activation function on the middle (hidden) layer.
+     self.hid_act = self.sigmoid(self.hidden) +self.B1 #Perform the activation function on the middle (hidden) layer.
      #print(self.hid_act.shape)
-     self.output = np.dot(self.hid_act, self.W2) #Dot produce of the activated values in the middle (hidden) layer to produce the input for the third layer
+     self.output = np.dot(self.hid_act, self.W2) +self.B2 #Dot produce of the activated values in the middle (hidden) layer to produce the input for the third layer
      #print(self.output.shape)
      self.pred_out = self.sigmoid(self.output) #Perform the activation function on the third layer and produce the predicted output
      return self.pred_out #return the third layer
+
+
 
     def back_prop(self, input,output,learning_rate):
         """
@@ -49,14 +53,16 @@ class Neural_Network(object):
 		"""
         error=(output-self.pred_out)#calculating the error between the output and the predicted output layer
         #calculate the derivative of the activation function to get the gradient slope
-        grad_out=self.sigmoid_der(self.pred_out)
-        grad_hid=self.sigmoid_der(self.hid_act)
+        grad_out=self.sigmoid_der(self.pred_out) #+self.Lambda*self.W2
+        grad_hid=self.sigmoid_der(self.hid_act) #+self.Lambda*self.W1
         delta_out=grad_out*error
         #print(delta_out.shape)
         delta_hid=np.dot(delta_out,self.W2.T) * grad_hid
         #update weights
-        self.W2 += np.dot(self.hid_act.T,delta_out) * learning_rate
-        self.W1 += np.dot(input.T, delta_hid) * learning_rate
+        self.W2 += (np.dot(self.hid_act.T,delta_out)*learning_rate) #+ self.Lambda * self.W1
+        self.W1 += (np.dot(input.T, delta_hid)*learning_rate) #+ self.Lambda * self.W1 #lambda serving as a regularization factor
+        self.B2 += np.sum(delta_out,axis=0)*learning_rate
+        self.B1 += np.sum(delta_hid,axis=0)*learning_rate
         #create new weights=gradient * learning rate
         return error
 
@@ -67,7 +73,7 @@ class Neural_Network(object):
         for i in range(iterations):
             self.forward(input)
             error=self.back_prop(input,known_output,learning_rate)
-            average_error=np.average(error)
+            average_error=np.average(error**2) #we are outputing the average error between all output nodes
             i+=1
         return average_error
 
