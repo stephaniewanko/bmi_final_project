@@ -116,7 +116,8 @@ def select_sequences(neg_seq_file, pos_seq_file, num_train):
 #T=0010
 
 '''
-We need to convert to numbers so the NN can do math. The 4 letters will get different numbers that are not dependent on each other so one letter is not weighted more than others. 
+We need to convert to numbers so the NN can do math. 
+The 4 letters will get different numbers that are not dependent on each other so one letter is not weighted more than others. 
 '''
 
 def DNA_input(inputs):
@@ -150,24 +151,28 @@ def DNA_input(inputs):
 
 
 #################__________________PART 3: Train NN on DNA Sequences__________________###############
-#Train NN on positives and negatives (note: avoid overfitting)
+#Train NN on positives and negatives 
+#This is just to ensure that our NN will run. 
+
 #print(outputs.shape)
 #print(input_DNA.shape)
+#1) select random sequences to train/test on
 input_train, output_train, input_test_seq, output_test=select_sequences('data/New_Neg_seq.fa','data/rap1-lieb-positives.txt', 90)
-print(input_test_seq)
-#print(output_train.shape[0])
-#print(output_train)
+#2) convert the input training DNA to numbers
 input_DNA_train=DNA_input(input_train)
 #print(input_DNA_train)
-print(input_DNA_train.shape[0])
+
 print('starting DNA Neural Network')
+#3) build NN
 NN_DNA = Neural_Network(input_layer_size=68, hidden_layer_size=3,output_layer_size=180, Lambda=2e-6)  # initialize NN #input_layer_size=input_DNA.shape[0], output_layer_size=outputs.shape[0], hidden_layer_size=10, Lambda=0.00000005
+#4) train NN
 NN_DNA.train(input_DNA_train, output_train, iterations=500,learning_rate=0.45)
 #initial prediction
 print('training done')
-predict = NN_DNA.forward(input_DNA_train)
-#print(predict)
-#print(predict.round()) #want this continous for the actual output
+#5) predict test data
+input_test_DNa=DNA_input(input_test_seq)
+predict = NN_DNA.forward(input_test_DNA)
+print(predict)
 print('yay! something ran!!')
 
 
@@ -218,7 +223,7 @@ def learn_parms():
 ####______________________PART 5: Test______________________############
 #we are going to train the NN using the hyperparamters we choose in the cross validation part
 
-NN_test = Neural_Network(input_layer_size=68, hidden_layer_size=20,output_layer_size=2, Lambda=2e-6)  # initialize NN #input_layer_size=input_DNA.shape[0], output_layer_size=outputs.shape[0], hidden_layer_size=10, Lambda=0.00000005
+NN_test = Neural_Network(input_layer_size=68, hidden_layer_size=20,output_layer_size=1, Lambda=2e-6)  # initialize NN #input_layer_size=input_DNA.shape[0], output_layer_size=outputs.shape[0], hidden_layer_size=10, Lambda=0.00000005
 input_train, output_train, input_test, output_test=select_sequences('data/New_Neg_seq.fa','data/rap1-lieb-positives.txt', 1)
 # Use previously found validated parameters for training
 input_DNA_train=DNA_input(input_train)
@@ -236,12 +241,9 @@ print(test_seq_input)
 print(test_seq_input.shape)
 test_output=NN_test.forward(test_seq_input)
 out = open("predictions.txt", "w")
-print('str')
-print(test_output.shape)
-print(test_output)
 for i in range(0, len(test_output)):
-    #print('test output 1')
-    #print(test_output[i,1])
+    #for each sequence in our test set, we are going to run it through our NN and get an output value. then write that output value to a txt file.
+    print(test_output)
     test_output=NN_test.forward(test_seq_input[i])
     print(test_output)
     out.write(test_seq[i]+'\t'+str(test_output[i]))
