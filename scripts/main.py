@@ -18,18 +18,9 @@ x = np.identity(8)
 y = np.identity(8)
 
 NN = Neural_Network(input_layer_size=8, hidden_layer_size=3, output_layer_size=8, Lambda=2e-6)
-#tested multiple lambda values. This lambda value gave me the best
-#print(NN)
-#T=trainer(NN)
-#T.train(x, y)
-#print(T)
-#predict = NN.forward(x)
-NN.train(x,y,10000,0.6)
-#T.train(x, y)
-#print(d1)
+NN.train(x,y,10000,0.6) #input, output, iterations, learning rate
 predict = NN.forward(x)
 print('predict')
-#rint(predict)
 print('Now rounding Matrix')
 # the original output is continous, but we want the output to be discrete
 print(predict.round())
@@ -41,9 +32,10 @@ print(predict.round())
 
 #Pre-process DNA for NN input
 
-#1) remove some of the false negatives from the fasta file & create new fasta file.
 
 ###########________________________________________#################
+#remove some of the false negatives from the fasta file & create new fasta file.
+
 pos_seq=pd.read_csv('data/rap1-lieb-positives.txt', sep='\t', header=None)
 neg_seq=list(SeqIO.parse("data/yeast-upstream-1k-negative.fa", 'fasta'))
 print(len(neg_seq))
@@ -58,6 +50,7 @@ for y in range(len(neg_seq)):
             continue
 remove_seq=set(remove_seq)
 
+#write out new fasta files with overlapping sequences removed. 
 with open('New_Neg_seq.fa', "w") as f:
     for y in range(len(neg_seq)):
         if str(neg_seq[y].seq) in remove_seq:
@@ -67,6 +60,9 @@ with open('New_Neg_seq.fa', "w") as f:
             SeqIO.write(neg_seq[y], f, "fasta")
 
 def select_sequences(neg_seq_file, pos_seq_file, num_train):
+    '''
+    INPUT: Negative fasta file, positive txt file, number of positive/negative sequences you want to select. 
+    '''
     #2) Create inputs from positive and negative sequences
     #import positive
     pos_seq=[]
